@@ -1,3 +1,4 @@
+declare class ResizeObserver extends MutationObserver { };
 (function () {
 interface IScale{
     X: number,

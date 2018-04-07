@@ -1,3 +1,4 @@
+;
 (function () {
     class XtalZoom extends HTMLElement {
         static get is() { return 'xtal-zoom'; }
