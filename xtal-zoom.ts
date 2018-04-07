@@ -11,6 +11,7 @@ class XtalZoom extends HTMLElement{
         return this._scale;
     }
     set scale(val){
+        if(this._scale && val.X === this._scale.X && val.Y === this._scale.Y) return;
         this._scale = val;
         const style = this.getResizingTarget().style;
         style.transform = `scale(${val.X}, ${val.Y}`;
@@ -50,7 +51,7 @@ class XtalZoom extends HTMLElement{
     handleResize(entries){
             //console.log('zoominprogress = ' + this._zoomInProgress);
             //if(this._zoomInProgress) return;
-            for (let entry of entries) {
+            //for (let entry of entries) {
                 // entry.target.style.borderRadius = Math.max(0, 250 - entry.contentRect.width) + 'px';
 
                 const target = this.getResizingTarget();
@@ -60,14 +61,15 @@ class XtalZoom extends HTMLElement{
                     }, 100);
                     return;
                 }
-                const contentRect = entry['contentRect'];
+                //const contentRect = entry['contentRect'];
+                const contentRect = this.getClientRects()[0];
                 console.log(contentRect.width);
                 this.scale = {
                     X: contentRect.width / target.clientWidth,
                     Y: contentRect.height / target.clientHeight,
                 }
 
-            }
+            //}
     }
     disconnectedCallback(){
         this._ro.disconnect();
