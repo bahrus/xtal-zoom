@@ -42,11 +42,14 @@ class XtalZoom extends HTMLElement{
     }
 
     _ro: ResizeObserver;
+    _boundResize;
     connectedCallback(){
         this._ro = new ResizeObserver(entries => {
             this.handleResize(entries)
         });
         this._ro.observe(this, null);
+        this._boundResize = this.handleResize.bind(this);
+        window.addEventListener('resize', this._boundResize);
     }
     handleResize(entries){
             //console.log('zoominprogress = ' + this._zoomInProgress);
@@ -73,6 +76,7 @@ class XtalZoom extends HTMLElement{
     }
     disconnectedCallback(){
         this._ro.disconnect();
+        window.removeEventListener('resize', this._boundResize);
     }
 }
 if(customElements.get(XtalZoom.is)) return;
