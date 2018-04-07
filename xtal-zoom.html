@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="xtal-zoom">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `xtal-zoom`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class XtalZoom extends Polymer.Element {
+      static get is() { return 'xtal-zoom'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'xtal-zoom'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(XtalZoom.is, XtalZoom);
+  </script>
+</dom-module>
