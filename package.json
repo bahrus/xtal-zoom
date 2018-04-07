@@ -1,0 +1,9 @@
+{
+  "name": "xtal-zoom",
+  "version": "0.0.0",
+  "description": "Make a dom element with hard coded sizes behave somewhat responsively.",
+  "main": "xtal-zoom.js",
+  "repository": "https://github.com/bahrus/xtal-zoom",
+  "author": "bahrus <anderson.bruce.b@gmail.com>",
+  "license": "MIT"
+}
