@@ -4,7 +4,21 @@ interface IScale{
     X: number,
     Y: number,
 }
-class XtalZoom extends HTMLElement{
+interface IXtalZoomProperties{
+    preserveAspectRatio: boolean;
+    doNotModify: string;
+}
+const preserveAspectRatio = 'preserve-aspect-ratio';
+const doNotModify = 'do-not-modify';
+/**
+ * `xtal-zoom`
+ *  Make a dom element with hard coded sizes behave somewhat responsively. 
+ *
+ * @customElement
+ * @polymer
+ * @demo demo/index.html
+ */
+class XtalZoom extends HTMLElement implements IXtalZoomProperties{
     static get is(){return 'xtal-zoom';}
     _scale: IScale;
     get scale(){
@@ -19,7 +33,44 @@ class XtalZoom extends HTMLElement{
         this.de('scale', val);
         this.setAttribute('scale', `scale(${val.X}, ${val.Y}`);
     }
-    _scaleY; number;
+    //_scaleY; number;
+    
+    _preserveAspectRatio: boolean;
+    get preserveAspectRatio(){
+        return this._preserveAspectRatio;
+    }
+    set preserveAspectRatio(val){
+        if(val){
+            this.setAttribute(preserveAspectRatio, '');
+        }else{
+            this.removeAttribute(preserveAspectRatio);
+        }
+    }
+
+    _doNotModify: string;
+    get doNotModify(){
+        return this._doNotModify;
+    }
+    set doNotModify(val){
+        this.setAttribute(doNotModify, val);
+    }
+
+    static get observedAttributes(){
+        return [
+            preserveAspectRatio,
+            doNotModify,
+        ]
+    }
+    attributeChangedCallback(name: string, oldVal: string, newVal: string){
+        switch(name){
+            case preserveAspectRatio:
+                this._preserveAspectRatio = newVal !== null;
+                break;
+            case doNotModify:
+                this._doNotModify = newVal;
+                break;
+        }
+    }
 
     
     // handleResize(entries){
@@ -67,10 +118,49 @@ class XtalZoom extends HTMLElement{
                 //const contentRect = entry['contentRect'];
                 const contentRect = this.getClientRects()[0];
                 console.log(contentRect.width);
-                this.scale = {
-                    X: contentRect.width / target.clientWidth,
-                    Y: contentRect.height / target.clientHeight,
+                if(this._preserveAspectRatio){
+                    const candidateX = contentRect.width / target.clientWidth;
+                    const candidateY = contentRect.height / target.clientHeight;
+                    let x = candidateX;
+                    let y = candidateY;
+                    // if(x > 1 && y > 1){
+                    //     x = y = Math.min(x, y);
+                    // }else if(x < 1 && y < 1){
+                    //     x = y = Math.max(x, y);
+                    // }else{
+
+                    // }
+                    if(x < 1 && y < 1){
+                        x = y = Math.max(x, y);
+                    }else{
+                        x = y = Math.min(x, y);
+                    }
+                    this.scale = {
+                        X: x,
+                        Y: y
+                    }
+                }else if(this._doNotModify){
+                    switch(this._doNotModify){
+                        case 'width':
+                            this.scale = {
+                                X: 1,
+                                Y: contentRect.height / target.clientHeight
+                            }
+                            break;
+                        case 'height':
+                            this.scale = {
+                                X: contentRect.width / target.clientWidth,
+                                Y: 1
+                            }
+                    }
+                
+                }else{
+                    this.scale = {
+                        X: contentRect.width / target.clientWidth,
+                        Y: contentRect.height / target.clientHeight,
+                    }
                 }
+
 
             //}
     }
